@@ -1,7 +1,6 @@
 import numpy as np
 import copy
 
-
 class Utils:
     def dE_dnet(loss, y):
         _loss = copy.copy(loss)

@@ -1,6 +1,6 @@
 import numpy as np
 import copy
-from lstm.activations import (
+from neuralnetwork.activations import (
     ReLU,
     Sigmoid,
     Softmax,
@@ -130,78 +130,3 @@ class Dense:
 
         self._nets = ak
         self._neurons = hk
-
-    def backward_propagation(self, chain_matrix=None, z=0, target=0):
-        if z == 1:
-            # de_do = de_do
-            # do_dx = np.array(self._neurons) * np.array(
-            #     [(1 if i == target else 0) - n for i, n in enumerate(self._neurons)])
-            # de_dx = de_do * do_dx
-            # dx_dw = [1] + self._input_neurons[1:]
-            # de_dw = np.array([de_dx * x for x in dx_dw])
-            # self._dE_do = np.dot(de_dx, self._weights)
-            # self._dE_dw = de_dw
-
-            loss = np.array(list(map(lambda x: [x], self._neurons)))
-            self._dE_do = Utils.dE_dnet(loss,
-                                        target).transpose().dot(self._weights)
-            self._dE_dw = Utils.dE_dnet(loss,
-                                        target).dot([self._input_neurons])
-
-            # print("==> dE/do")
-            # print(self._dE_do)
-            # print("de_do")
-            # print(de_do)
-            # print("do_dx")
-            # print(do_dx)
-            # print("de_dx")
-            # print(de_dx)
-            # print("dx_dw")
-            # print(dx_dw)
-            # print("de_dw")
-            # print(de_dw)
-            # print(self._dE_do)
-        else:
-
-            # de_dnet =  get from other (+1) layer
-            # dnet_do = (net from other (+1) layer / o (activation) ) = W other layer
-            # do_dx = activation derivative(x)
-            # dx_dw = self._input_neurons
-
-            # de_do = de_do
-            # do_dx = [1] + [1 if x > 0 else 0 for x in self._nets]
-            # de_dx = de_do * do_dx
-            # dx_dw = [1] + self._input_neurons[1:]
-            # de_dw = np.array([de_dx * x for x in dx_dw])
-            # print("===> de_dx : ")
-            # print(np.array(de_dx).shape)
-            # print("===> weights : ")
-            # print(np.array(self._weights).shape)
-            # self._dE_do = np.dot(de_dx, np.transpose(self._weights))
-            # self._dE_dw = de_dw
-
-            # print("==> Chain_matrix")
-            # print(chain_matrix.shape)
-            # print("==> dx/do")
-            # print(Utils.ReLU_X(np.array([1] + self._neurons)))
-            # print("==> weights")
-            # print(np.array(self._weights).shape)
-
-            temp = chain_matrix * Utils.ReLU_X(np.array([1] + self._neurons))
-
-            temp = np.array([temp[0][1:].tolist()])
-
-            # print(temp.shape)
-
-            self._dE_do = np.dot(temp, np.array(self._weights))
-            self._dE_dw = np.dot(temp.transpose(),
-                                 np.array([self._input_neurons]))
-
-            # print(do_dx)
-            # print(de_dx)
-            # print(self._input_neurons)
-            # print(de_dw)
-            # print("self dedo")
-            # print(de_dx)
-            # print(self._weights)
-            # print(self._dE_do)
