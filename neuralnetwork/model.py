@@ -56,6 +56,11 @@ class Sequential:
                     self.layers[k].forward_propagation(X)
                 else:
                     self.layers[k].forward_propagation(self.layers[k - 1].neurons)
+            elif (type(self.layers[k]) == LSTM):
+                if (k == 0):
+                    self.layers[k].forward_propagation(X)
+                else:
+                    self.layers[k].forward_propagation(self.layers[k - 1].neurons)
             elif (type(self.layers[k]) == Flatten):
                 self.layers[k].flattening(self.layers[k - 1].neurons)
             elif (type(self.layers[k]) == Pooling):
@@ -64,6 +69,7 @@ class Sequential:
         self.loss = -math.log(self.layers[-1].neurons[y])
 
     def predict(self, X):
+        
         for k in range(len(self.layers)):
             if (type(self.layers[k]) == Dense):
                 if (k == 0):
@@ -75,17 +81,23 @@ class Sequential:
                     self.layers[k].forward_propagation(X)
                 else:
                     self.layers[k].forward_propagation(self.layers[k - 1].neurons)
+            elif (type(self.layers[k]) == LSTM):
+                if (k == 0):
+                    self.layers[k].forward_propagation(X)
+                else:
+                    self.layers[k].forward_propagation(self.layers[k - 1].neurons)
             elif (type(self.layers[k]) == Flatten):
                 self.layers[k].flattening(self.layers[k - 1].neurons)
             elif (type(self.layers[k]) == Pooling):
                 self.layers[k].pooling(self.layers[k - 1].neurons)
 
-        for i in range(len(self.layers[-1]._neurons)):
-            if(self.layers[-1]._neurons[i] > maxi):
-                maxi = self.layers[-1]._neurons[i]
-                maxidx = i
+        return self.layers[-1]._neurons
+        # for i in range(len(self.layers[-1]._neurons)):
+        #     if(self.layers[-1]._neurons[i] > maxi):
+        #         maxi = self.layers[-1]._neurons[i]
+        #         maxidx = i
                 
-        return maxidx
+        # return maxidx
 
     def summary(self):
         col1 = 35
@@ -108,6 +120,9 @@ class Sequential:
             if (type(layer) == Dense):
                 before = self.layers[i].input_size
                 param = (before + 1) * self.layers[i].output_size
+            elif (type(layer) == LSTM):
+                n = self.layers[i]._units
+                param = (1+n+1)*4*n
             elif (type(layer) == Conv2D):
                 param = self.layers[i].output_size[3] * (
                     self.layers[i].kernel_size[0] *
@@ -118,7 +133,7 @@ class Sequential:
 
             col1_text = self.layers[i].name + " " + "(" + type(
                 self.layers[i]).__name__ + ")"
-            if (type(layer) == Dense or type(layer) == Flatten):
+            if (type(layer) == Dense or type(layer) == Flatten or type(layer) == LSTM):
                 col2_text = str((None, self.layers[i].output_size))
             else:
                 col2_text = str(self.layers[i].output_size)

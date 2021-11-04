@@ -21,19 +21,6 @@ class Matrix:
         return np.dot(mat1, mat2).tolist()
 
 
-class Utils:
-    def dE_dnet(loss, y):
-        _loss = copy.copy(loss)
-        _loss[y] = -(1 - _loss[y])
-        return _loss
-
-    def ReLU_X(X):
-        res = copy.copy(X)
-        for x in np.nditer(res, op_flags=['readwrite']):
-            x[...] = 1 if x > 0 else 0
-        return res
-
-
 class Dense:
     def __init__(
         self,

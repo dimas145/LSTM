@@ -1,5 +1,5 @@
 import numpy as np
-from cnn.activations import (
+from neuralnetwork.activations import (
     ReLU,
     Sigmoid,
     Softmax,
@@ -147,49 +147,49 @@ class LSTM:
 
 
 # slide
-# _x = np.array([[1, 2], [.5, 3]])
-# uf = np.array([.7, .45])
-# ui = np.array([.95, .8])
-# uc = np.array([.45, .25])
-# uo = np.array([.6, .4])
+_x = np.array([[1, 2], [.5, 3]])
+uf = np.array([.7, .45])
+ui = np.array([.95, .8])
+uc = np.array([.45, .25])
+uo = np.array([.6, .4])
 
-# wf = np.array([.1])
-# wi = np.array([.8])
-# wc = np.array([.15])
-# wo = np.array([.25])
+wf = np.array([.1])
+wi = np.array([.8])
+wc = np.array([.15])
+wo = np.array([.25])
 
-# bf = np.array([.15])
-# bi = np.array([.65])
-# bc = np.array([.2])
-# bo = np.array([.1])
+bf = np.array([.15])
+bi = np.array([.65])
+bc = np.array([.2])
+bo = np.array([.1])
 
-# hp = np.array([0])
-# cp = np.array([0])
+hp = np.array([0])
+cp = np.array([0])
 
-# buf = np.array([0])
-# bui = np.array([0])
-# buc = np.array([0])
-# buo = np.array([0])
+buf = np.array([0])
+bui = np.array([0])
+buc = np.array([0])
+buo = np.array([0])
 
-# layer = LSTM(2)
-# layer.set_w(wf, wi, wc, wo, bf, bi, bc, bo)
-# layer.set_u(uf, ui, uc, uo, buf, bui, buc, buo)
-# layer.forward_propagation(_x)
+layer = LSTM(2)
+layer.set_w(wf, wi, wc, wo, bf, bi, bc, bo)
+layer.set_u(uf, ui, uc, uo, buf, bui, buc, buo)
+layer.forward_propagation(_x)
 
 # bitcoin price
-df = pd.read_csv('../bitcoin_price_Training - Training.csv')
-print(df.head())
+# df = pd.read_csv('../bitcoin_price_Training - Training.csv')
+# print(df.head())
 
-df = df[::-1]
+# df = df[::-1]
 # print(df[::-1].drop(['Date', 'Volume'], axis=1).to_numpy())
 # high_df = df[::-1][['Date', 'High']]
 # low_df = df[::-1][['Date', 'Low']]
 # open_df = df[::-1][['Date', 'Open']]
 # close_df = df[::-1][['Date', 'Close']]
 
-fig, axes = plt.subplots(2, 2)
-df.plot.line('Date', 'High', ax=axes[0, 0])
-df.plot.line('Date', 'Low', ax=axes[0, 1])
-df.plot.line('Date', 'Open', ax=axes[1, 0])
-df.plot.line('Date', 'Close', ax=axes[1, 1])
-plt.show()
+# fig, axes = plt.subplots(2, 2)
+# df.plot.line('Date', 'High', ax=axes[0, 0])
+# df.plot.line('Date', 'Low', ax=axes[0, 1])
+# df.plot.line('Date', 'Open', ax=axes[1, 0])
+# df.plot.line('Date', 'Close', ax=axes[1, 1])
+# plt.show()
