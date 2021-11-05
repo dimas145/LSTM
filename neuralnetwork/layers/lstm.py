@@ -6,10 +6,22 @@ from neuralnetwork.activations import (
     Softmax,
 )
 
+    # The basic terminology
+
+    # U => units x features
+    # W => units x units
+
+    # timesteps is length of input sequence
+    # features is length of a input (input vector representation)
+    # units is amount of LSTM layer or hidden layer
+
+    # n(h) == n(units)
+
 class ForgetGate:
     def __init__(self, uf, xt, wf, hp, b):
+        # (units, features) x (feature, 1) + (units, units) x (units, 1) + (units, 1)
         self._output = Sigmoid(np.matmul(uf, np.transpose(
-            xt)) + np.matmul(wf, np.transpose(hp)) + b).result
+            xt)) + np.matmul(wf, np.transpose(hp)) + np.transpose(b)).result
 
     @property
     def output(self):
@@ -18,15 +30,19 @@ class ForgetGate:
 
 class InputGate:
     def __init__(self, ui, uc, xt, wi, wc, hp, bi, bc):
+        # (units, features) x (feature, 1) + (units, units) x (units, 1) + (units, 1)
         self.i = Sigmoid(np.matmul(ui, np.transpose(
-            xt)) + np.matmul(wi, np.transpose(hp)) + bi).result
+            xt)) + np.matmul(wi, np.transpose(hp)) + np.transpose(bi)).result
+
+        # (units, features) x (feature, 1) + (units, units) x (units, 1) + (units, 1)
         self.c = np.tanh(np.matmul(uc, np.transpose(
-            xt)) + np.matmul(wc, np.transpose(hp)) + bc)
+            xt)) + np.matmul(wc, np.transpose(hp)) + np.transpose(bc))
 
 
 class CellState:
     def __init__(self, ft, cp, it, c_tilde):
-        self._output = np.multiply(ft, cp) + np.multiply(it, c_tilde)
+        # (units, 1) . (units, 1) + (units, 1) . (units, 1) 
+        self._output = np.multiply(ft, np.transpose(cp)) + np.multiply(it, c_tilde)
 
     @property
     def output(self):
@@ -34,10 +50,12 @@ class CellState:
 
 
 class OutputGate:
-    def __init__(self,  u, x, w, ht, b, ct):
+    def __init__(self, u, x, w, ht, b, ct):
+        # (units, features) x (feature, 1) + (units, units) x (units, 1) + 
         self._o = Sigmoid(np.matmul(u, np.transpose(
-            x)) + np.matmul(w, np.transpose(ht)) + b).result
+            x)) + np.matmul(w, np.transpose(ht)) + np.transpose(b)).result
 
+        # (units, 1) . (units, 1)
         self._output = np.multiply(self._o, np.tanh(ct))
 
     @property
@@ -46,9 +64,9 @@ class OutputGate:
 
 
 class LSTM:
-    def __init__(self, units, input_shape=0, activation=Sigmoid, recurrent_activation='sigmoid', name="lstm"):
+    def __init__(self, units, input_shape, activation=Sigmoid, recurrent_activation='sigmoid', name="lstm"):
         self._units = units
-        self._timestamp = input_shape[0]
+        self._timesteps = input_shape[0]
         self._features = input_shape[1]
         self._activation = activation
         self._name = name
@@ -67,6 +85,16 @@ class LSTM:
         self._init_cp()
         self._init_hp()
 
+    def count_params(self):
+        sum = 0
+        print("Unit: " + str(self._units))
+        print("Feature: " + str(self._features))
+
+        for x in [self._wf, self._wi, self._wc, self._wo, self._bf, self._bi, self._bc, self._bo, self._uf, self._ui, self._uc, self._uo]:
+            print(x.size)
+            sum += x.size
+
+        return sum
 
     def _init_w(self):
         self._wf = np.random.rand(self._units, self._units)
@@ -79,14 +107,10 @@ class LSTM:
         self._bo = np.random.rand(1, self._units)
 
     def _init_u(self):
-        self._uf = np.random.rand(self._units, self._timestamp)
-        self._ui = np.random.rand(self._units, self._timestamp)
-        self._uc = np.random.rand(self._units, self._timestamp)
-        self._uo = np.random.rand(self._units, self._timestamp)
-        self._buf = np.random.rand(1, self._timestamp)
-        self._bui = np.random.rand(1, self._timestamp)
-        self._buc = np.random.rand(1, self._timestamp)
-        self._buo = np.random.rand(1, self._timestamp)
+        self._uf = np.random.rand(self._units, self._features)
+        self._ui = np.random.rand(self._units, self._features)
+        self._uc = np.random.rand(self._units, self._features)
+        self._uo = np.random.rand(self._units, self._features)
 
     def set_w(self, wf, wi, wc, wo, bf, bi, bc, bo):
         self._wf = wf
@@ -98,48 +122,55 @@ class LSTM:
         self._bc = bc
         self._bo = bo
 
-    def set_u(self, uf, ui, uc, uo, buf, bui, buc, buo):
+    def set_u(self, uf, ui, uc, uo):
         self._uf = uf
         self._ui = ui
         self._uc = uc
         self._uo = uo
-        self._buf = buf
-        self._bui = bui
-        self._buc = buc
-        self._buo = buo
+
 
     def _init_hp(self):
-        self._hp = np.array([0])
+        self._hp = np.zeros(shape=(1, self._units))
 
     def set_hp(self, hp):
         self._hp = hp
 
     def _init_cp(self):
-        self._cp = np.array([0])
+        self._cp = np.zeros(shape=(1, self._units))
 
     def set_cp(self, cp):
         self._cp = cp
 
+    # The basic terminology
+
+    # U => units x features
+    # W => units x units
+
+    # timesteps is length of input sequence
+    # features is length of a input (input vector representation)
+    # units is amount of LSTM layer or hidden layer
+
     def forward_propagation(self, neurons, y=0):
         self._input_neurons = neurons
 
-        for i in range(self._units):
+        for i in range(self._timesteps):
             print("Step", i + 1)
 
-            x = self._input_neurons[i]
+            x = self._input_neurons[i] # (timesteps x 1 x features) 
+            
             fg = ForgetGate(self._uf, x, self._wf, self._hp, self._bf)
-            ft = fg.output
+            ft = fg.output # (units, 1)
             print("ft:", ft)
 
             ig = InputGate(self._ui, self._uc, x, self._wi,
                            self._wc, self._hp, self._bi, self._bc)
-            it = ig.i
-            c_tilde = ig.c
+            it = ig.i # (units, 1)
+            c_tilde = ig.c # (units, 1)
             print("it:", it)
             print("c_tilde:", c_tilde)
 
             cs = CellState(ft, self._cp, it, c_tilde)
-            ct = cs.output
+            ct = cs.output # (units, 1)
             print("ct:", ct)
 
             og = OutputGate(self._uo, x, self._wo, self._hp, self._bo, ct)

@@ -122,7 +122,8 @@ class Sequential:
                 param = (before + 1) * self.layers[i].output_size
             elif (type(layer) == LSTM):
                 n = self.layers[i]._units
-                param = (1+n+1)*4*n
+                m = self.layers[i]._features
+                param = (m+n+1)*4*n
             elif (type(layer) == Conv2D):
                 param = self.layers[i].output_size[3] * (
                     self.layers[i].kernel_size[0] *

@@ -145,6 +145,17 @@ class LSTM:
             self._cp = ct
             self._hp = ht
 
+# hidden => jumlah cell
+# input  => jumlah timestep
+# output => jumlah timestep
+
+# U => hidden x input
+# V => output x hidden
+# W => hidden x hidden
+
+# U => 1 x 2
+# V => 2 x 1
+# W => 1 x 1
 
 # slide
 _x = np.array([[1, 2], [.5, 3]])
@@ -175,6 +186,12 @@ layer = LSTM(2)
 layer.set_w(wf, wi, wc, wo, bf, bi, bc, bo)
 layer.set_u(uf, ui, uc, uo, buf, bui, buc, buo)
 layer.forward_propagation(_x)
+
+print()
+
+layer = LSTM(10, input_size=50)
+
+print(4*layer._units*(5+layer._units+1))
 
 # bitcoin price
 # df = pd.read_csv('../bitcoin_price_Training - Training.csv')
