@@ -3,7 +3,8 @@ import copy
 from neuralnetwork.activations import (
     ReLU,
     Sigmoid,
-    Softmax,
+    Softmax, Linear,
+    Linear
 )
 
 class Utils:
@@ -86,7 +87,7 @@ class Conv2D:
     ):
         self._name = name
 
-        if activation not in [ReLU, Sigmoid, Softmax]:
+        if activation not in [ReLU, Sigmoid, Softmax, Linear]:
             raise Exception("Undefined activation")
         self._activation = activation
 

@@ -4,6 +4,7 @@ from neuralnetwork.activations import (
     ReLU,
     Sigmoid,
     Softmax,
+    Linear
 )
 
 
@@ -34,7 +35,7 @@ class Dense:
         self._output_shape = (None, output_size)
         self._input_size = input_size
 
-        if activation not in [ReLU, Sigmoid, Softmax]:
+        if activation not in [ReLU, Sigmoid, Softmax, Linear]:
             raise Exception("Undefined activation")
         self._activation = activation
 
@@ -111,7 +112,6 @@ class Dense:
     def forward_propagation(self, neurons, y=0):
         self._input_neurons = neurons
 
-        print(np.array(self._weights).shape)
         neurons = list(map(lambda x: [x], neurons))
 
         ak = list(map(lambda x: x[0], Matrix.mult(self._weights, neurons)))

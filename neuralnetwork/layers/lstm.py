@@ -3,7 +3,8 @@ import numpy as np
 from neuralnetwork.activations import (
     ReLU,
     Sigmoid,
-    Softmax,
+    Softmax, Linear,
+    Linear
 )
 
     # The basic terminology
@@ -76,7 +77,7 @@ class LSTM:
 
         self.neurons = None
 
-        if activation not in [ReLU, Sigmoid, Softmax]:
+        if activation not in [ReLU, Sigmoid, Softmax, Linear]:
             raise Exception("Undefined activation")
         self._activation = activation
 
