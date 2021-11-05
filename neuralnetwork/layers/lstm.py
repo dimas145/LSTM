@@ -150,33 +150,35 @@ class LSTM:
     # features is length of a input (input vector representation)
     # units is amount of LSTM layer or hidden layer
 
-    def forward_propagation(self, neurons, y=0):
+    def forward_propagation(self, neurons, debug=False):
         self._input_neurons = neurons
 
         for i in range(self._timesteps):
-            print("Step", i + 1)
+            if debug : print("Timestep", i + 1)
 
-            x = self._input_neurons[i] # (timesteps x 1 x features) 
+            x = self._input_neurons[i] # (timesteps, 1, features) 
             
             fg = ForgetGate(self._uf, x, self._wf, self._hp, self._bf)
             ft = fg.output # (units, 1)
-            print("ft:", ft)
+            if debug : print("ft\t:", ft)
 
             ig = InputGate(self._ui, self._uc, x, self._wi,
                            self._wc, self._hp, self._bi, self._bc)
             it = ig.i # (units, 1)
             c_tilde = ig.c # (units, 1)
-            print("it:", it)
-            print("c_tilde:", c_tilde)
+            if debug : print("it\t:", it)
+            if debug : print("~ct\t:", c_tilde)
 
             cs = CellState(ft, self._cp, it, c_tilde)
             ct = cs.output # (units, 1)
-            print("ct:", ct)
+            if debug : print("Ct\t:", ct)
 
             og = OutputGate(self._uo, x, self._wo, self._hp, self._bo, ct)
             ot = og._o
             ht = og.output
-            print("ot:", ot)
-            print("ht:", ht)
+            if debug : print("ot\t:", ot)
+            if debug : print("ht\t:", ht)
             self._cp = ct
             self._hp = ht
+            if debug : print()
+            

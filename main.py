@@ -21,14 +21,8 @@ def test1():
     bi = np.array([[.65]])
     bc = np.array([[.2]])
     bo = np.array([[.1]])
-    
-    sum = 0
+   
 
-    for x in [wf, wi, wc, wo, bf, bi, bc, bo, uf, ui, uc, uo]:
-        print(x.size)
-        sum += x.size
-
-    print("SUMMM : " + str(sum))
 
     layer = layers.LSTM(1, input_shape=(2, 2))
     layer.set_w(wf, wi, wc, wo, bf, bi, bc, bo)
@@ -46,12 +40,15 @@ def test1():
 # (m+n+1)*4*n
 # (1+1+1)*4*1
 
+
+
 def test2():
     _x = np.array([[1, 2], [.5, 3]])
-    layer = layers.LSTM(1, input_shape=(2, 2))
+    layer = layers.LSTM(1, input_shape=(20, 2))
     layer.init_layer()
-    print("SIMMM : " + str(layer.count_params()))
-    # layer.forward_propagation(_x)
+
+    _x = np.random.rand(20, 1, 2)
+    layer.forward_propagation(_x)
 
 
 if __name__ == "__main__":
