@@ -74,6 +74,8 @@ class LSTM:
         self._output_size = units
         self.name = name
 
+        self.neurons = None
+
         if activation not in [ReLU, Sigmoid, Softmax]:
             raise Exception("Undefined activation")
         self._activation = activation
@@ -130,13 +132,13 @@ class LSTM:
 
 
     def _init_hp(self):
-        self._hp = np.zeros(shape=(1, self._units))
+        self._hp = np.ones(shape=(1, self._units))
 
     def set_hp(self, hp):
         self._hp = hp
 
     def _init_cp(self):
-        self._cp = np.zeros(shape=(1, self._units))
+        self._cp = np.ones(shape=(1, self._units))
 
     def set_cp(self, cp):
         self._cp = cp
@@ -152,6 +154,8 @@ class LSTM:
 
     def forward_propagation(self, neurons, debug=False):
         self._input_neurons = neurons
+        self._init_cp()
+        self._init_hp()
 
         for i in range(self._timesteps):
             if debug : print("Timestep", i + 1)
@@ -180,5 +184,6 @@ class LSTM:
             if debug : print("ht\t:", ht)
             self._cp = ct
             self._hp = ht
+            self.neurons = np.transpose(self._hp)[0].tolist()
             if debug : print()
             

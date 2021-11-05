@@ -110,6 +110,8 @@ class Dense:
 
     def forward_propagation(self, neurons, y=0):
         self._input_neurons = neurons
+
+        print(np.array(self._weights).shape)
         neurons = list(map(lambda x: [x], neurons))
 
         ak = list(map(lambda x: x[0], Matrix.mult(self._weights, neurons)))

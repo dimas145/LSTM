@@ -69,29 +69,30 @@ class Sequential:
         self.loss = -math.log(self.layers[-1].neurons[y])
 
     def predict(self, X):
-        
-        for k in range(len(self.layers)):
-            if (type(self.layers[k]) == Dense):
-                if (k == 0):
-                    self.layers[k].forward_propagation([0] + X)
-                else:
-                    self.layers[k].forward_propagation([0] + self.layers[k - 1].neurons)
-            elif (type(self.layers[k]) == Conv2D):
-                if (k == 0):
-                    self.layers[k].forward_propagation(X)
-                else:
-                    self.layers[k].forward_propagation(self.layers[k - 1].neurons)
-            elif (type(self.layers[k]) == LSTM):
-                if (k == 0):
-                    self.layers[k].forward_propagation(X)
-                else:
-                    self.layers[k].forward_propagation(self.layers[k - 1].neurons)
-            elif (type(self.layers[k]) == Flatten):
-                self.layers[k].flattening(self.layers[k - 1].neurons)
-            elif (type(self.layers[k]) == Pooling):
-                self.layers[k].pooling(self.layers[k - 1].neurons)
-
-        return self.layers[-1]._neurons
+        for i in range(X.shape[0]):
+            res = []
+            for k in range(len(self.layers)):
+                if (type(self.layers[k]) == Dense):
+                    if (k == 0):
+                        self.layers[k].forward_propagation([0] + X[i])
+                    else:
+                        self.layers[k].forward_propagation([0] + self.layers[k - 1].neurons)
+                elif (type(self.layers[k]) == Conv2D):
+                    if (k == 0):
+                        self.layers[k].forward_propagation(X[i])
+                    else:
+                        self.layers[k].forward_propagation(self.layers[k - 1].neurons)
+                elif (type(self.layers[k]) == LSTM):
+                    if (k == 0):
+                        self.layers[k].forward_propagation(X[i])
+                    else:
+                        self.layers[k].forward_propagation(self.layers[k - 1].neurons)
+                elif (type(self.layers[k]) == Flatten):
+                    self.layers[k].flattening(self.layers[k - 1].neurons)
+                elif (type(self.layers[k]) == Pooling):
+                    self.layers[k].pooling(self.layers[k - 1].neurons)
+            res.append(self.layers[-1].neurons)
+        return np.array(res)
         # for i in range(len(self.layers[-1]._neurons)):
         #     if(self.layers[-1]._neurons[i] > maxi):
         #         maxi = self.layers[-1]._neurons[i]
